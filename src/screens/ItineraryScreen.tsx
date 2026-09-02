@@ -1,7 +1,7 @@
 import { generateItinerary } from '@/services/itineraryGenerator';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { router } from 'expo-router';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 type ItineraryScreenProps = {
   destination: string;
   from: string;
@@ -26,7 +26,8 @@ export default function ItineraryScreen({
 
   const itinerary = generatedItinerary.days;
   const totalCost = generatedItinerary.totalCost;
-
+  const disruptionTarget = itinerary
+  .flatMap((day) => day.activities)[0];
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
@@ -113,6 +114,28 @@ export default function ItineraryScreen({
             ))}
           </View>
         ))}
+        <Pressable
+  onPress={() => {
+    if (!disruptionTarget) {
+      return;
+    }
+
+    router.push({
+      pathname: '/replan',
+      params: {
+        days,
+        budget,
+        interests,
+        activityId: disruptionTarget.id,
+      },
+    });
+  }}
+  style={styles.replanButton}
+>
+  <Text style={styles.replanButtonText}>
+    ⚠️ SIMULATE TRAVEL DISRUPTION
+  </Text>
+</Pressable>
       </ScrollView>
     </SafeAreaView>
   );
@@ -291,5 +314,20 @@ preferenceText: {
   fontSize: 14,
   color: '#42534F',
   marginTop: 4,
+},
+replanButton: {
+  height: 54,
+  marginTop: 10,
+  marginBottom: 20,
+  borderRadius: 16,
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: '#A65A00',
+},
+
+replanButtonText: {
+  fontSize: 13,
+  fontWeight: '800',
+  color: '#FFFFFF',
 },
 });
