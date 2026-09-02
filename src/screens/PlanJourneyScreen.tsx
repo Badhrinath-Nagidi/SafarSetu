@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useState } from 'react';
 import {
   Pressable,
@@ -8,7 +9,6 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 const INTERESTS = ['Nature', 'Adventure', 'Culture', 'Food'];
 
 export default function HomeScreen() {
@@ -27,14 +27,8 @@ export default function HomeScreen() {
   };
 
   const handlePlanJourney = () => {
-    console.log({
-      destination,
-      from,
-      days,
-      budget,
-      interests: selectedInterests,
-    });
-  };
+  router.push('/itinerary');
+};
 
   return (
     <SafeAreaView style={styles.safeArea}>
