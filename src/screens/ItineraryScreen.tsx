@@ -1,182 +1,31 @@
+import { generateItinerary } from '@/services/itineraryGenerator';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-type Activity = {
-  time: string;
-  title: string;
-  description: string;
-  category: string;
-  cost: number;
+type ItineraryScreenProps = {
+  destination: string;
+  from: string;
+  days: string;
+  budget: string;
+  interests: string;
 };
 
-type DayPlan = {
-  day: number;
-  title: string;
-  activities: Activity[];
-};
 
-const itinerary: DayPlan[] = [
-  {
-    day: 1,
-    title: 'Arrival & Shillong',
-    activities: [
-      {
-        time: '09:00 AM',
-        title: 'Arrive in Guwahati',
-        description: 'Begin your journey from Guwahati.',
-        category: 'Transport',
-        cost: 0,
-      },
-      {
-        time: '11:00 AM',
-        title: 'Travel to Shillong',
-        description: 'Road journey from Guwahati to Shillong.',
-        category: 'Transport',
-        cost: 1200,
-      },
-      {
-        time: '02:00 PM',
-        title: 'Hotel Check-in',
-        description: 'Check in and settle into your accommodation.',
-        category: 'Stay',
-        cost: 2500,
-      },
-      {
-        time: '07:00 PM',
-        title: 'Local Dinner',
-        description: 'Explore local Meghalaya cuisine.',
-        category: 'Food',
-        cost: 800,
-      },
-    ],
-  },
-  {
-    day: 2,
-    title: 'Waterfalls & Shillong',
-    activities: [
-      {
-        time: '09:00 AM',
-        title: 'Elephant Falls',
-        description: 'Explore one of Shillong’s popular waterfalls.',
-        category: 'Nature',
-        cost: 200,
-      },
-      {
-        time: '12:00 PM',
-        title: 'Local Lunch',
-        description: 'Try a local meal in Shillong.',
-        category: 'Food',
-        cost: 600,
-      },
-      {
-        time: '02:00 PM',
-        title: 'Shillong Peak',
-        description: 'Enjoy panoramic views of Shillong.',
-        category: 'Nature',
-        cost: 300,
-      },
-      {
-        time: '05:00 PM',
-        title: 'Local Market',
-        description: 'Explore local shops and cultural products.',
-        category: 'Culture',
-        cost: 500,
-      },
-    ],
-  },
-  {
-    day: 3,
-    title: 'Living Root Bridges',
-    activities: [
-      {
-        time: '07:00 AM',
-        title: 'Travel to Cherrapunji',
-        description: 'Start an early journey towards Cherrapunji.',
-        category: 'Transport',
-        cost: 1500,
-      },
-      {
-        time: '10:00 AM',
-        title: 'Living Root Bridges',
-        description: 'Experience Meghalaya’s iconic living root bridges.',
-        category: 'Adventure',
-        cost: 500,
-      },
-      {
-        time: '03:00 PM',
-        title: 'Local Café',
-        description: 'Relax and enjoy refreshments.',
-        category: 'Food',
-        cost: 400,
-      },
-    ],
-  },
-  {
-    day: 4,
-    title: 'Nature & Adventure',
-    activities: [
-      {
-        time: '09:00 AM',
-        title: 'Canyon & Viewpoint',
-        description: 'Explore scenic landscapes and viewpoints.',
-        category: 'Nature',
-        cost: 500,
-      },
-      {
-        time: '01:00 PM',
-        title: 'Adventure Activity',
-        description: 'Choose a suitable outdoor activity.',
-        category: 'Adventure',
-        cost: 1000,
-      },
-      {
-        time: '06:00 PM',
-        title: 'Cultural Experience',
-        description: 'Experience local culture and traditions.',
-        category: 'Culture',
-        cost: 700,
-      },
-    ],
-  },
-  {
-    day: 5,
-    title: 'Relax & Departure',
-    activities: [
-      {
-        time: '09:00 AM',
-        title: 'Breakfast',
-        description: 'Enjoy a relaxed final breakfast.',
-        category: 'Food',
-        cost: 400,
-      },
-      {
-        time: '11:00 AM',
-        title: 'Souvenir Shopping',
-        description: 'Pick up local souvenirs.',
-        category: 'Shopping',
-        cost: 1000,
-      },
-      {
-        time: '02:00 PM',
-        title: 'Return to Guwahati',
-        description: 'Travel back for departure.',
-        category: 'Transport',
-        cost: 1200,
-      },
-    ],
-  },
-];
-
-export default function ItineraryScreen() {
-  const totalCost = itinerary.reduce(
-    (total, day) =>
-      total +
-      day.activities.reduce(
-        (dayTotal, activity) => dayTotal + activity.cost,
-        0
-      ),
-    0
+export default function ItineraryScreen({
+  destination,
+  from,
+  days,
+  budget,
+  interests,
+}: ItineraryScreenProps) {
+  const generatedItinerary = generateItinerary(
+    Number(days),
+    Number(budget.replace(/[^0-9]/g, '')),
+    interests
   );
+
+  const itinerary = generatedItinerary.days;
+  const totalCost = generatedItinerary.totalCost;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -186,26 +35,40 @@ export default function ItineraryScreen() {
       >
         <Text style={styles.eyebrow}>YOUR JOURNEY</Text>
 
-        <Text style={styles.title}>Meghalaya</Text>
+        <Text style={styles.title}>{destination}</Text>
 
         <Text style={styles.subtitle}>
-          Your 5-day journey, organized around nature, adventure and local
-          experiences.
+          {days}-day journey from {from}, built around your selected interests.
         </Text>
 
         <View style={styles.summaryCard}>
-          <View>
-            <Text style={styles.summaryLabel}>DURATION</Text>
-            <Text style={styles.summaryValue}>5 Days</Text>
-          </View>
+  <View>
+    <Text style={styles.summaryLabel}>DURATION</Text>
+    <Text style={styles.summaryValue}>{days} Days</Text>
+  </View>
 
-          <View>
-            <Text style={styles.summaryLabel}>ESTIMATED COST</Text>
-            <Text style={styles.summaryValue}>
-              ₹{totalCost.toLocaleString('en-IN')}
-            </Text>
-          </View>
-        </View>
+  <View>
+    <Text style={styles.summaryLabel}>ESTIMATED COST</Text>
+    <Text style={styles.summaryValue}>
+      ₹{totalCost.toLocaleString('en-IN')}
+    </Text>
+  </View>
+</View>
+
+<View style={styles.preferenceCard}>
+  <Text style={styles.preferenceTitle}>YOUR PREFERENCES</Text>
+
+  <Text style={styles.preferenceText}>
+    Budget: ₹{Number(budget).toLocaleString('en-IN')}
+  </Text>
+
+  <Text style={styles.preferenceText}>
+    Interests:{' '}
+    {interests
+      ? interests.split(',').join(' • ')
+      : 'General exploration'}
+  </Text>
+</View>
 
         {itinerary.map((day) => (
           <View key={day.day} style={styles.daySection}>
@@ -406,4 +269,27 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#183B35',
   },
+
+  preferenceCard: {
+  backgroundColor: '#FFFFFF',
+  borderRadius: 18,
+  padding: 18,
+  marginBottom: 28,
+  borderWidth: 1,
+  borderColor: '#E2E9E6',
+},
+
+preferenceTitle: {
+  fontSize: 11,
+  fontWeight: '800',
+  letterSpacing: 1,
+  color: '#78908A',
+  marginBottom: 8,
+},
+
+preferenceText: {
+  fontSize: 14,
+  color: '#42534F',
+  marginTop: 4,
+},
 });

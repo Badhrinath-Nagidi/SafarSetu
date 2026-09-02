@@ -27,7 +27,20 @@ export default function HomeScreen() {
   };
 
   const handlePlanJourney = () => {
-  router.push('/itinerary');
+  if (!destination || !from || !days || !budget) {
+    return;
+  }
+
+  router.push({
+    pathname: '/itinerary',
+    params: {
+      destination,
+      from,
+      days,
+      budget,
+      interests: selectedInterests.join(','),
+    },
+  });
 };
 
   return (
