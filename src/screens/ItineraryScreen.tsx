@@ -2,6 +2,7 @@ import { generateItinerary } from '@/services/itineraryGenerator';
 import { router } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 type ItineraryScreenProps = {
   destination: string;
   from: string;
@@ -9,7 +10,6 @@ type ItineraryScreenProps = {
   budget: string;
   interests: string;
 };
-
 
 export default function ItineraryScreen({
   destination,
@@ -134,6 +134,21 @@ export default function ItineraryScreen({
 >
   <Text style={styles.replanButtonText}>
     ⚠️ SIMULATE TRAVEL DISRUPTION
+  </Text>
+</Pressable>
+    <Pressable
+  onPress={() =>
+    router.push({
+      pathname: '/travel-hub',
+      params: {
+        destination,
+      },
+    })
+  }
+  style={styles.travelHubButton}
+>
+  <Text style={styles.travelHubButtonText}>
+    🔗 EXPLORE TRAVEL SERVICES
   </Text>
 </Pressable>
       </ScrollView>
@@ -329,5 +344,20 @@ replanButtonText: {
   fontSize: 13,
   fontWeight: '800',
   color: '#FFFFFF',
+},
+travelHubButton: {
+  height: 54,
+  marginTop: 10,
+  marginBottom: 20,
+  borderRadius: 16,
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: '#DCEBE6',
+},
+
+travelHubButtonText: {
+  fontSize: 13,
+  fontWeight: '800',
+  color: '#183B35',
 },
 });
